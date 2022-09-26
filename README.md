@@ -17,3 +17,5 @@
 - virtualenv `environment-name`
 - source `environment-name`/bin/activate *LINUX* or `environment-name`\scripts\activate *WINDOWS*
 - pip install -r requirements.txt
+- enter directory /drones_api
+- python manage.py runserver
