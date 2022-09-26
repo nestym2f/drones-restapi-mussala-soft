@@ -1,0 +1,7 @@
+###> Django Cache ###
+drones_api/drones_api/__pycache__/
+drones_api/drones_api/__pycache__/
+
+###> IDEs ###
+/.idea
+/.vscode
