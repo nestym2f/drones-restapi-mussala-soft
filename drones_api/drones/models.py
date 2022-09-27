@@ -1,7 +1,3 @@
-from audioop import minmax
-from os import name
-from pyexpat import model
-from re import M
 from django.db import models
 
 
