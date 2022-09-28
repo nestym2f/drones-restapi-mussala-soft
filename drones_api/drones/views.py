@@ -37,3 +37,30 @@ def dronesRegisterView(request):
 def dronesDeleteAllView(request):    
     count = Drone.objects.all().delete()        
     return JsonResponse({'message': '{} Drones were deleted successfully!'.format(count[0])}, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+@permission_classes((permissions.AllowAny,))
+def droneDetailView(request, pk = None, serialNumber = None):
+    try: 
+        if pk is not None:
+            drone = Drone.objects.get(pk=pk)
+        else: 
+            drone = Drone.objects.get(serialNumber=serialNumber)
+    except Drone.DoesNotExist: 
+        return JsonResponse({'message': 'The Drone does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+ 
+    if request.method == 'GET': 
+        droneSerializer = DroneSerializer(drone) 
+        return JsonResponse(droneSerializer.data) 
+ 
+    elif request.method == 'PUT' or request.method == 'PATCH':
+        droneData = JSONParser().parse(request) 
+        droneSerializer = DroneSerializer(drone, data=droneData) 
+        if droneSerializer.is_valid(): 
+            droneSerializer.save() 
+            return JsonResponse(droneSerializer.data) 
+        return JsonResponse(droneSerializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+ 
+    elif request.method == 'DELETE': 
+        drone.delete() 
+        return JsonResponse({'message': 'Drone was deleted successfully!'}, status=status.HTTP_200_OK)
