@@ -64,8 +64,16 @@ def droneDetailView(request, pk = None, serialNumber = None):
     elif request.method == 'DELETE': 
         drone.delete() 
         return JsonResponse({'message': 'Drone was deleted successfully!'}, status=status.HTTP_200_OK)
-    
-class MedicationViewSet(viewsets.ModelViewSet):
-    queryset = Medication.objects.all()
-    serializer_class = MedicationSerializer
-    permission_classes = [permissions.AllowAny]
+
+@api_view(['GET'])
+@permission_classes((permissions.AllowAny,))
+def medicationGetAllView(request):    
+    queryset = Medication.objects.all()        
+    medicationSerializer = MedicationSerializer(queryset, many=True)
+    return JsonResponse(medicationSerializer.data, safe=False)
+
+@api_view(['DELETE'])
+@permission_classes((permissions.AllowAny,))
+def medicationDeleteAllView(request):    
+    count = Medication.objects.all().delete()        
+    return JsonResponse({'message': '{} Medications were deleted successfully!'.format(count[0])}, status=status.HTTP_200_OK)
