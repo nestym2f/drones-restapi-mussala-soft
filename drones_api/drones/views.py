@@ -64,3 +64,8 @@ def droneDetailView(request, pk = None, serialNumber = None):
     elif request.method == 'DELETE': 
         drone.delete() 
         return JsonResponse({'message': 'Drone was deleted successfully!'}, status=status.HTTP_200_OK)
+    
+class MedicationViewSet(viewsets.ModelViewSet):
+    queryset = Medication.objects.all()
+    serializer_class = MedicationSerializer
+    permission_classes = [permissions.AllowAny]
