@@ -80,6 +80,15 @@ ex: payload={"searchMedicationBy": "id", "medicationValue": ["1","2","3"]}
 ex: payload={"searchMedicationBy": "code", "medicationValue": "AMXCL_250"}
 ex: payload={"searchMedicationBy": "name", "medicationValue": ["amoxicilin_250mg","MO_TABLET_200"] }
 ``` 
+***Check load medications by drone Serial Number*** `(method=GET)`
+```
+/api/drones/check-loaded-medications/serial-number/<serial-number>
+```
+***Check load medications by drone ID*** `(method=GET)`
+```
+/api/drones/check-loaded-medications/id/<id>
+```
+
 ***Get medications list*** `(method=GET)`
 ```
 /api/medications/ 
