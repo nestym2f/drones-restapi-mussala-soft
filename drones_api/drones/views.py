@@ -94,19 +94,24 @@ def droneLoadMedicationsView(request, pk = None, serialNumber = None):
                 medLoaded.drone = None
                 medLoaded.save()                
         #Check for id, code or name of medications to load into the Drone
+        droneAvailableWeight = drone.weightLimit
         medication = None
         medicationNotFound = 0
-        message = ''
+        message = ''        
         for medVal in medicationValue:
             try:
                 if searchMedicationBy == 'id':
-                    medication = Medication.objects.get(id=medVal)                
+                    medication = Medication.objects.get(id=medVal)                         
                 elif searchMedicationBy == 'code':
-                    medication = Medication.objects.get(code=medVal)                
+                    medication = Medication.objects.get(code=medVal)                    
                 elif searchMedicationBy == 'name':
-                    medication = Medication.objects.get(name=medVal)                
-                medication.drone = drone
-                medication.save()
+                    medication = Medication.objects.get(name=medVal)
+                droneAvailableWeight-=medication.weight
+                if droneAvailableWeight >= 0:
+                    medication.drone = drone
+                    medication.save()
+                else:
+                    break
             except Medication.DoesNotExist:
                 medicationNotFound+=1 
                 continue
@@ -115,7 +120,9 @@ def droneLoadMedicationsView(request, pk = None, serialNumber = None):
         else:
             message = "Medications successfully loaded into Drone. "
             if medicationNotFound > 0:
-                message += "At least one medication wasn't found"     
+                message += "At least one medication wasn't found. "
+            if not droneAvailableWeight >= 0:
+                message += "At least one medication wasn't loaded due to drone's weight limit."
         return JsonResponse({'message': message }, status=status.HTTP_200_OK)
     except Drone.DoesNotExist: 
         return JsonResponse({'message': 'The Drone does not exist'}, status=status.HTTP_404_NOT_FOUND)     
