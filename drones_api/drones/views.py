@@ -1,3 +1,4 @@
+from tokenize import String
 from django.http.response import JsonResponse
 from django.http import QueryDict
 from .models import Model, State, Image, Drone, Medication
@@ -80,6 +81,9 @@ def droneLoadMedicationsView(request, pk = None, serialNumber = None):
             drone = Drone.objects.get(pk=pk)
         else: 
             drone = Drone.objects.get(serialNumber=serialNumber)
+        if not drone.batteryCapacity >= 25 or drone.state.id != 1:
+            stateName = State.objects.get(id=1)
+            return JsonResponse({'message': "The drone is not available for loading. Battery is on: "+ str(drone.batteryCapacity) + " and State is: " + stateName.value}, status=status.HTTP_400_BAD_REQUEST)
         #Check is Json data is valid
         if not request.data.get('searchMedicationBy'):
             return JsonResponse({'message': "Not valid request, searchMedicationBy i empty or isn't present"}, status=status.HTTP_400_BAD_REQUEST)
@@ -144,7 +148,21 @@ def checkingLoadedDroneView(request, pk = None, serialNumber = None):
             return JsonResponse({'message': 'No medications loaded for the given drone'}, status=status.HTTP_404_NOT_FOUND)
     except Drone.DoesNotExist: 
         return JsonResponse({'message': 'The Drone does not exist'}, status=status.HTTP_404_NOT_FOUND)
-
+    
+@api_view(['GET'])
+@permission_classes((permissions.AllowAny,))
+def checkingAvailableDronesView(request):
+    try:        
+        #Check for Drones in Idle and Battery >= than 25
+        queryset = Drone.objects.filter(state=1)
+        droneSerializer = DroneSerializer(queryset, many=True)
+        if len(droneSerializer.data) > 0:
+            return JsonResponse(droneSerializer.data, safe=False)
+        else:
+            return JsonResponse({'message': 'No drones available for load'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return JsonResponse({'message': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
 @api_view(['GET'])
 @permission_classes((permissions.AllowAny,))
 def medicationGetAllView(request):    
