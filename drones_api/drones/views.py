@@ -1,4 +1,5 @@
 from django.http.response import JsonResponse
+from django.http import QueryDict
 from .models import Model, State, Image, Drone, Medication
 from .serializers import DroneSerializer, MedicationSerializer
 from rest_framework import permissions, status
@@ -69,6 +70,55 @@ def droneDetailView(request, pk = None, serialNumber = None):
     elif request.method == 'DELETE': 
         drone.delete() 
         return JsonResponse({'message': 'Drone was deleted successfully!'}, status=status.HTTP_200_OK)
+    
+@api_view(['PATCH'])
+@permission_classes((permissions.AllowAny,))
+def droneLoadMedicationsView(request, pk = None, serialNumber = None):
+    try: 
+        #Check for Drone
+        if pk is not None:
+            drone = Drone.objects.get(pk=pk)
+        else: 
+            drone = Drone.objects.get(serialNumber=serialNumber)
+        #Check is Json data is valid
+        if not request.data.get('searchMedicationBy'):
+            return JsonResponse({'message': "Not valid request, searchMedicationBy i empty or isn't present"}, status=status.HTTP_400_BAD_REQUEST)
+        if not request.data.get('medicationValue'):
+            return JsonResponse({'message': "Not valid request, medicationValue is empty or isn't present"}, status=status.HTTP_400_BAD_REQUEST)                
+        searchMedicationBy = request.data.get('searchMedicationBy')        
+        medicationValue = request.data.get('medicationValue')
+        #Check for old medications loaded in the Drone to empty
+        medicationsLoaded = Medication.objects.filter(drone=drone)
+        if medicationsLoaded.count() > 0:
+            for medLoaded in medicationsLoaded:
+                medLoaded.drone = None
+                medLoaded.save()                
+        #Check for id, code or name of medications to load into the Drone
+        medication = None
+        medicationNotFound = 0
+        message = ''
+        for medVal in medicationValue:
+            try:
+                if searchMedicationBy == 'id':
+                    medication = Medication.objects.get(id=medVal)                
+                elif searchMedicationBy == 'code':
+                    medication = Medication.objects.get(code=medVal)                
+                elif searchMedicationBy == 'name':
+                    medication = Medication.objects.get(name=medVal)                
+                medication.drone = drone
+                medication.save()
+            except Medication.DoesNotExist:
+                medicationNotFound+=1 
+                continue
+        if not medication:
+            message = "No medications found"
+        else:
+            message = "Medications successfully loaded into Drone. "
+            if medicationNotFound > 0:
+                message += "At least one medication wasn't found"     
+        return JsonResponse({'message': message }, status=status.HTTP_200_OK)
+    except Drone.DoesNotExist: 
+        return JsonResponse({'message': 'The Drone does not exist'}, status=status.HTTP_404_NOT_FOUND)     
 
 @api_view(['GET'])
 @permission_classes((permissions.AllowAny,))
