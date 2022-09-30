@@ -98,6 +98,14 @@ ex: payload={"searchMedicationBy": "name", "medicationValue": ["amoxicilin_250mg
 ```
 /api/drones/available-to-load
 ```
+***Check Battery Capacity by drone Serial Number*** `(method=GET)`
+```
+api/drones/check-battery-capacity/serial-number/<serial-number>
+```
+***Check Battery Capacity by drone ID*** `(method=GET)`
+```
+api/drones/check-battery-capacity/id/<id>
+```
 
 ***Get medications list*** `(method=GET)`
 ```
