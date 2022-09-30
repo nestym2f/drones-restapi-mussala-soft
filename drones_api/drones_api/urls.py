@@ -16,7 +16,9 @@ urlpatterns = [
     url(r'^api/drones/load-medications/serial-number/(?P<serialNumber>\w+)', views.droneLoadMedicationsView),
     url(r'^api/drones/check-loaded-medications/id/(?P<pk>[0-9]+)', views.checkingLoadedDroneView),
     url(r'^api/drones/check-loaded-medications/serial-number/(?P<serialNumber>\w+)', views.checkingLoadedDroneView),
-    url(r'^api/drones/available-to-load', views.checkingAvailableDronesView),    
+    url(r'^api/drones/available-to-load', views.checkingAvailableDronesView),
+    url(r'^api/drones/check-battery-capacity/id/(?P<pk>[0-9]+)', views.checkingDronesBatteryView),
+    url(r'^api/drones/check-battery-capacity/serial-number/(?P<serialNumber>\w+)', views.checkingDronesBatteryView),        
     
     url(r'^api/medications/$', views.medicationGetAllView),
     url(r'^api/medications/delete', views.medicationDeleteAllView),

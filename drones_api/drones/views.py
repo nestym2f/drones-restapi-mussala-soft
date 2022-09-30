@@ -162,6 +162,19 @@ def checkingAvailableDronesView(request):
             return JsonResponse({'message': 'No drones available for load'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return JsonResponse({'message': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+@permission_classes((permissions.AllowAny,))
+def checkingDronesBatteryView(request, pk = None, serialNumber = None):
+    try:        
+        if pk is not None:
+            drone = Drone.objects.get(pk=pk)
+        else: 
+            drone = Drone.objects.get(serialNumber=serialNumber)    
+        return JsonResponse({'message': 'The drone has ' + str(drone.batteryCapacity) +'% battery capacity'})
+            
+    except Drone.DoesNotExist: 
+        return JsonResponse({'message': 'The Drone does not exist'}, status=status.HTTP_404_NOT_FOUND)
     
 @api_view(['GET'])
 @permission_classes((permissions.AllowAny,))
