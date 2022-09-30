@@ -61,6 +61,8 @@ only for PUT and PATCH
 payload={}
 ```
 ***Load drone by ID*** `(method=PATCH)`
+
+`Are available to load only drones with IDLE state and Battery >= 25`
 ```
 /api/drones/load-medications/id/<id>
 ```
@@ -71,6 +73,8 @@ ex: payload={"searchMedicationBy": "code", "medicationValue": "AMXCL_250"}
 ex: payload={"searchMedicationBy": "name", "medicationValue": ["amoxicilin_250mg","MO_TABLET_200"] }
 ```
 ***Load drone by Serial Number*** `(method=PATCH)`
+
+`Are available to load only drones with IDLE state and Battery >= 25`
 ```
 /api/drones/load-medications/serial-number/<serial-number>
 ```
@@ -87,6 +91,12 @@ ex: payload={"searchMedicationBy": "name", "medicationValue": ["amoxicilin_250mg
 ***Check load medications by drone ID*** `(method=GET)`
 ```
 /api/drones/check-loaded-medications/id/<id>
+```
+***Check Drones Available to Load*** `(method=GET)`
+
+`Are available those drones with IDLE state and Battery >= 25`
+```
+/api/drones/available-to-load
 ```
 
 ***Get medications list*** `(method=GET)`
