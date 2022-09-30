@@ -129,6 +129,24 @@ def droneLoadMedicationsView(request, pk = None, serialNumber = None):
 
 @api_view(['GET'])
 @permission_classes((permissions.AllowAny,))
+def checkingLoadedDroneView(request, pk = None, serialNumber = None):
+    try:         
+        if pk is not None:
+            drone = Drone.objects.get(pk=pk)
+        else: 
+            drone = Drone.objects.get(serialNumber=serialNumber)       
+        #Check for medications loaded in the Drone
+        queryset = Medication.objects.filter(drone=drone)
+        medicationSerializer = MedicationSerializer(queryset, many=True)
+        if len(medicationSerializer.data) > 0:
+            return JsonResponse(medicationSerializer.data, safe=False)
+        else:
+            return JsonResponse({'message': 'No medications loaded for the given drone'}, status=status.HTTP_404_NOT_FOUND)
+    except Drone.DoesNotExist: 
+        return JsonResponse({'message': 'The Drone does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+@permission_classes((permissions.AllowAny,))
 def medicationGetAllView(request):    
     queryset = Medication.objects.all()        
     medicationSerializer = MedicationSerializer(queryset, many=True)
