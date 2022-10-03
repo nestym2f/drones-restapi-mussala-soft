@@ -11,21 +11,21 @@
 - Install Git ≥ 2.30
 ### Create the project directory
 #### type and run in a console
-- mkdir `directory-name`
-- cd `directory-name`
-- git init
-- git remote add origin https://github.com/nestym2f/drones-restapi-mussala-soft.git
-- git pull origin master
+- `mkdir 'directory-name'`
+- `cd 'directory-name'`
+- `git init`
+- `git remote add origin https://github.com/nestym2f/drones-restapi-mussala-soft.git`
+- `git pull origin master`
 
 ## BUILD AND RUN
 #### Create a virtual environment to isolate packages dependencies for the project
 #### type and run in a console
-- pip install virtualenv
-- python3 virtualenv `environment-name`
-- source `environment-name`/bin/activate ***On Windows use*** `environment-name`\Scripts\activate
-- pip install -r requirements.txt
-- cd drones_api
-- python manage.py runserver 8080
+- `pip3 install virtualenv`
+- `python3 virtualenv 'environment-name'` ( ***in python3.10***  there's no need to type `python3` or `python` just type `virtualenv 'environment-name'`)
+- `source 'environment-name'/bin/activate` ( ***On Windows use***  `'environment-name'\Scripts\activate` )
+- `pip3 install -r requirements.txt`
+- `cd drones_api`
+- `python manage.py runserver 8080`
 
 ***The*** `runserver 8080` ***command will start a local server with ip:port 127.0.0.1:8080, every endpoint full url below should be:***
 ```
