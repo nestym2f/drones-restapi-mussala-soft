@@ -1,21 +1,32 @@
-"""drones_api URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf.urls import url 
+from rest_framework import routers
+from drones import views
 
-urlpatterns = [
+router = routers.DefaultRouter()
+    
+urlpatterns = [   
+    url(r'^api/drones/$', views.dronesGetAllView),    
+    url(r'^api/drones/delete', views.dronesDeleteAllView),
+    url(r'^api/drones/register', views.dronesRegisterView),  
+    url(r'^api/drones/id/(?P<pk>[0-9]+)', views.droneDetailView),
+    url(r'^api/drones/serial-number/(?P<serialNumber>\w+)', views.droneDetailView),
+    url(r'^api/drones/load-medications/id/(?P<pk>[0-9]+)', views.droneLoadMedicationsView),
+    url(r'^api/drones/load-medications/serial-number/(?P<serialNumber>\w+)', views.droneLoadMedicationsView),
+    url(r'^api/drones/check-loaded-medications/id/(?P<pk>[0-9]+)', views.checkingLoadedDroneView),
+    url(r'^api/drones/check-loaded-medications/serial-number/(?P<serialNumber>\w+)', views.checkingLoadedDroneView),
+    url(r'^api/drones/available-to-load', views.checkingAvailableDronesView),
+    url(r'^api/drones/check-battery-capacity/id/(?P<pk>[0-9]+)', views.checkingDronesBatteryView),
+    url(r'^api/drones/check-battery-capacity/serial-number/(?P<serialNumber>\w+)', views.checkingDronesBatteryView),        
+    
+    url(r'^api/medications/$', views.medicationGetAllView),
+    url(r'^api/medications/delete', views.medicationDeleteAllView),
+    url(r'^api/medications/register', views.medicationRegisterView),
+    url(r'^api/medications/id/(?P<pk>[0-9]+)', views.medicationDetailView),
+    url(r'^api/medications/code/(?P<code>\w+)', views.medicationDetailView),
+    url(r'^api/medications/name/(?P<name>\w+)', views.medicationDetailView),
+    
     path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
