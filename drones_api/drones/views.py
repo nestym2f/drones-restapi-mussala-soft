@@ -23,6 +23,8 @@ def dronesRegisterView(request):
     droneData = JSONParser().parse(request)
     droneSerializer = DroneSerializer(data=droneData)
     if droneSerializer.is_valid():
+        if not re.search("^[a-zA-Z0-9]*$", droneSerializer.initial_data['serialNumber']):
+                return JsonResponse({'message': 'Invalid Drone serial number'}, status=status.HTTP_406_NOT_ACCEPTABLE)
         if int(droneSerializer.initial_data['batteryCapacity']) < 25 and droneSerializer.initial_data['state'] == "2":
             return JsonResponse({'message': 'Can not register a Drone with less that 25% Battery and Loading State'}, status=status.HTTP_406_NOT_ACCEPTABLE) 
         if int(droneSerializer.initial_data['batteryCapacity']) > 100 or int(droneSerializer.initial_data['batteryCapacity']) < 0:
