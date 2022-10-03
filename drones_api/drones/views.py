@@ -154,7 +154,7 @@ def checkingLoadedDroneView(request, pk = None, serialNumber = None):
 def checkingAvailableDronesView(request):
     try:        
         #Check for Drones in Idle and Battery >= than 25
-        queryset = Drone.objects.filter(state=1)
+        queryset = Drone.objects.filter(state=1).filter(batteryCapacity__gte=25)
         droneSerializer = DroneSerializer(queryset, many=True)
         if len(droneSerializer.data) > 0:
             return JsonResponse(droneSerializer.data, safe=False)
