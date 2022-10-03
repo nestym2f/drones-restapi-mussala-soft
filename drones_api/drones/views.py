@@ -203,3 +203,36 @@ def medicationRegisterView(request):
 def medicationDeleteAllView(request):    
     count = Medication.objects.all().delete()        
     return JsonResponse({'message': '{} Medications were deleted successfully!'.format(count[0])}, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+@permission_classes((permissions.AllowAny,))
+def medicationDetailView(request, pk = None, name = None, code = None):
+    try: 
+        if pk is not None:
+            medication = Medication.objects.get(pk=pk)
+        elif name is not None: 
+            medication = Medication.objects.get(name=name)
+        else:
+            medication = Medication.objects.get(code=code)
+    except Medication.DoesNotExist: 
+        return JsonResponse({'message': 'The Medication does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+ 
+    if request.method == 'GET': 
+        medicationSerializer = MedicationSerializer(medication) 
+        return JsonResponse(medicationSerializer.data) 
+ 
+    elif request.method == 'PUT' or request.method == 'PATCH':
+        medicationData = JSONParser().parse(request) 
+        medicationSerializer = MedicationSerializer(medication, data=medicationData) 
+        if medicationSerializer.is_valid():
+            if not re.search("^[a-zA-Z0-9_-]*$", medicationSerializer.initial_data['name']):
+                return JsonResponse({'message': 'Invalid Medication Name'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            if not re.search("^[A-Z0-9_]*$", medicationSerializer.initial_data['code']):
+                return JsonResponse({'message': 'Invalid Medication Code'}, status=status.HTTP_406_NOT_ACCEPTABLE) 
+            medicationSerializer.save() 
+            return JsonResponse(medicationSerializer.data) 
+        return JsonResponse(medicationSerializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+ 
+    elif request.method == 'DELETE': 
+        medication.delete() 
+        return JsonResponse({'message': 'Medication was deleted successfully!'}, status=status.HTTP_200_OK)

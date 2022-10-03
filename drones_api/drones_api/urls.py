@@ -23,6 +23,9 @@ urlpatterns = [
     url(r'^api/medications/$', views.medicationGetAllView),
     url(r'^api/medications/delete', views.medicationDeleteAllView),
     url(r'^api/medications/register', views.medicationRegisterView),
+    url(r'^api/medications/id/(?P<pk>[0-9]+)', views.medicationDetailView),
+    url(r'^api/medications/code/(?P<code>\w+)', views.medicationDetailView),
+    url(r'^api/medications/name/(?P<name>\w+)', views.medicationDetailView),
     
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
