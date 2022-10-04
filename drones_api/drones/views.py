@@ -258,7 +258,7 @@ def createAuditLog(request):
         logger.warning(checkTime +' - Drone #' + str(drone.get('id')) + ' with Serial Number: ' + str(drone.get('serialNumber')) + '. Battery Capacity on: ' + str(drone.get('batteryCapacity')) + '%.' )    
     return JsonResponse({"message":"All battery drones were successfully checked!"})
 
-def createAuditLogWithScheduler(request):
+def createAuditLogWithScheduler():
     logger = logging.getLogger('audit_periodic_logger')    
     queryset = Drone.objects.all()      
     droneSerializer = DroneSerializer(queryset, many=True)
