@@ -257,3 +257,16 @@ def createAuditLog(request):
     for drone in droneSerializer.data:
         logger.warning(checkTime +' - Drone #' + str(drone.get('id')) + ' with Serial Number: ' + str(drone.get('serialNumber')) + '. Battery Capacity on: ' + str(drone.get('batteryCapacity')) + '%.' )    
     return JsonResponse({"message":"All battery drones were successfully checked!"})
+
+def createAuditLogWithScheduler(request):
+    logger = logging.getLogger('audit_periodic_logger')    
+    queryset = Drone.objects.all()      
+    droneSerializer = DroneSerializer(queryset, many=True)
+    checkDateTime = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")    
+    checkTime = datetime.datetime.now().strftime("%H:%M:%S")
+    logger.warning('\n' + checkDateTime +' - Initializing full Battery Check')
+    if not len(droneSerializer.data) > 0:
+        logger.warning(checkTime + ' - No Drones available for battery check!')        
+    for drone in droneSerializer.data:
+        logger.warning(checkTime +' - Drone #' + str(drone.get('id')) + ' with Serial Number: ' + str(drone.get('serialNumber')) + '. Battery Capacity on: ' + str(drone.get('batteryCapacity')) + '%.' )
+    
