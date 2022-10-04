@@ -206,3 +206,16 @@ ex: payload={
     "code":"NEW_CODE"
 }
 ```
+`This will create a log file with the information returned after checking drones batteries`
+
+***Create Audit Log for battery*** `(method=GET)`
+```
+/api/create-battery-log
+
+audit.log is used for log the info
+```
+`Besides the` ***Create Audit Log for battery*** `endpoint, a scheduled task is configured to run when the server starts up to log the information returned after checking drones batteries`
+
+```
+audit_periodic.log is used to log the info
+```
