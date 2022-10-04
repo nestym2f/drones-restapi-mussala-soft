@@ -27,6 +27,8 @@ urlpatterns = [
     url(r'^api/medications/code/(?P<code>\w+)', views.medicationDetailView),
     url(r'^api/medications/name/(?P<name>\w+)', views.medicationDetailView),
     
+    url(r'^api/create-battery-log', views.createAuditLog),    
+    
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

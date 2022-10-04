@@ -7,6 +7,9 @@ from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import JSONParser
 import re
+import logging
+import datetime 
+
 
 @api_view(['GET'])
 @permission_classes((permissions.AllowAny,))
@@ -167,7 +170,7 @@ def checkingAvailableDronesView(request):
 
 @api_view(['GET'])
 @permission_classes((permissions.AllowAny,))
-def checkingDronesBatteryView(request, pk = None, serialNumber = None):
+def checkingDronesBatteryView(request, pk = None, serialNumber = None):    
     try:        
         if pk is not None:
             drone = Drone.objects.get(pk=pk)
@@ -238,3 +241,32 @@ def medicationDetailView(request, pk = None, name = None, code = None):
     elif request.method == 'DELETE': 
         medication.delete() 
         return JsonResponse({'message': 'Medication was deleted successfully!'}, status=status.HTTP_200_OK)
+    
+@api_view(['GET'])
+@permission_classes((permissions.AllowAny,))
+def createAuditLog(request):
+    logger = logging.getLogger('audit_logger')    
+    queryset = Drone.objects.all()      
+    droneSerializer = DroneSerializer(queryset, many=True)
+    checkDateTime = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")    
+    checkTime = datetime.datetime.now().strftime("%H:%M:%S")
+    logger.warning('\n' + checkDateTime +' - Initializing full Battery Check')
+    if not len(droneSerializer.data) > 0:
+        logger.warning(checkTime + ' - No Drones available for battery check!')
+        return JsonResponse({"message":"No Drones available for battery check!"})
+    for drone in droneSerializer.data:
+        logger.warning(checkTime +' - Drone #' + str(drone.get('id')) + ' with Serial Number: ' + str(drone.get('serialNumber')) + '. Battery Capacity on: ' + str(drone.get('batteryCapacity')) + '%.' )    
+    return JsonResponse({"message":"All battery drones were successfully checked!"})
+
+def createAuditLogWithScheduler():
+    logger = logging.getLogger('audit_periodic_logger')    
+    queryset = Drone.objects.all()      
+    droneSerializer = DroneSerializer(queryset, many=True)
+    checkDateTime = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")    
+    checkTime = datetime.datetime.now().strftime("%H:%M:%S")
+    logger.warning('\n' + checkDateTime +' - Initializing full Battery Check')
+    if not len(droneSerializer.data) > 0:
+        logger.warning(checkTime + ' - No Drones available for battery check!')        
+    for drone in droneSerializer.data:
+        logger.warning(checkTime +' - Drone #' + str(drone.get('id')) + ' with Serial Number: ' + str(drone.get('serialNumber')) + '. Battery Capacity on: ' + str(drone.get('batteryCapacity')) + '%.' )
+    

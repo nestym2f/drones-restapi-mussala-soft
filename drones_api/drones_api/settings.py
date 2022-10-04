@@ -42,6 +42,35 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'audit': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'audit.log',            
+        },
+        'audit_periodic': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'audit_periodic.log',            
+        },
+    },
+    'loggers': {
+        'audit_logger': {
+            'handlers': ['audit'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+        'audit_periodic_logger': {
+            'handlers': ['audit_periodic'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+    },
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
