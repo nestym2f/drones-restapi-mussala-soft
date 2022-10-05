@@ -4,6 +4,7 @@
 - Django Rest Framework 3.14.0
 - Git ≥ 2.30
 - django-cors-headers 3.13.0
+- APScheduler 3.9.1
 - virtualenv package 
 
 ## INSTALLATION
@@ -26,6 +27,8 @@
 - `pip3 install -r requirements.txt`
 - `cd drones_api`
 - `python manage.py runserver 8080`
+#### To test endpoints using unit tests type
+- `python manage.py test --keep`
 
 ***The*** `runserver 8080` ***command will start a local server with ip:port 127.0.0.1:8080, every endpoint full url below should be:***
 ```
