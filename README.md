@@ -4,6 +4,7 @@
 - Django Rest Framework 3.14.0
 - Git ≥ 2.30
 - django-cors-headers 3.13.0
+- APScheduler 3.9.1
 - virtualenv package 
 
 ## INSTALLATION

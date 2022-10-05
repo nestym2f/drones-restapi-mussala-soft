@@ -3,6 +3,7 @@ drones_api/drones_api/__pycache__/
 drones_api/drones/__pycache__/
 drones_api/drones/migrations/__pycache__/
 drones_api/drones_scheduler/__pycache__/
+drones_api/tests/__pycache__/
 
 ###> IDEs ###
 /.idea
